@@ -5,7 +5,7 @@
 
 #TODO:
 #* Add option to turn on/off url logging.
-#?    Maybe use Checkbox widget?
+#? ~~~Maybe use Checkbox widget?~~~
 #* Implement easier way to open urls in browser.
 #* Add options to configure chunk sizes (number of urls per load)
 #* Add options to configure max amount of urls to return (total urls to load)
@@ -18,29 +18,38 @@ import PySimpleGUI as sg
 from googlesearch import search as gSearch
 
 
-def googleURLs(query: str):
+def googleURLs(query: str, logURLs: bool) -> None:
     """
     Performs a google search for the query entered, and scrapes resulting URLs in 5 "chunks" of 3 urls every 1 second.
     
-    - BE WARNED: 
-        - Use sparingly; otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
+    - If desired, you can log the URLs returned by the search engine by checking the "Log URLs" field.
     - Saves each URL in a separate file located in the logs directory:
         - './GSearch_URL_WebScraper/logs/**.txt'
+    - BE WARNED:
+        - Use sparingly; otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
     """
     search_query = query
+    enable_logging = logURLs
     file_uid = secrets.token_urlsafe(5)
-    fh = open(fr'./GSearch-Logger/logs/logFile_{file_uid}.txt', 'x')
 
-    for url in gSearch(
-            search_query,
-            tld="com",
-            num=3,
-            stop=15,
-            pause=1.0,
-    ):
-        fh.write('{}\n\n'.format(url))
-        print('\n{}'.format(url))
-    fh.close()
+    #! If logging is enabled, URLs will be saved in the logs directory.
+    if enable_logging == True:
+        with open(fr'./GSearch-Logger/logs/logFile_{file_uid}.txt', 'x') as fh:
+            fh.write('Search Query: %s:\n\n' % search_query)
+            print('\nSearch Query: %s\n\n' % search_query)
+            for url in gSearch(search_query,
+                               tld="com",
+                               num=3,
+                               stop=15,
+                               pause=1.0):
+                fh.write('{}\n\n'.format(url))
+                print('\n{}'.format(url))
+        return print('Process Complete!\nLog saved as %s\n\n' % fh)
+    #! If logging is disabled, URLs are only displayed through output.
+    elif enable_logging == False:
+        for url in gSearch(search_query, tld="com", num=3, stop=15, pause=1.0):
+            print('\n{}'.format(url))
+        return print('Process Complete!')
 
 
 def openUrl(url: str) -> bool:
@@ -52,13 +61,16 @@ def openUrl(url: str) -> bool:
     return url_open(searchQuery, 2)
 
 
-#* Color Scheme of window:
+#? Color Scheme of window:
 sg.theme('DarkBlue')
 
 #? Window Element Design/Layout:
 mainLayout = [
-    # Row 1 - Text
-    [sg.Text('Enter a Search Query Below')],
+    # Row 1 - Text/Log URLs Option
+    [
+        sg.Text('Enter a Search Query Below'),
+        sg.Checkbox('Log URLs?', k='-URL Logging-')
+    ],
     # End Row 1
     [  # Row 2 - Input/Search
         sg.InputText(do_not_clear=False,
@@ -70,10 +82,10 @@ mainLayout = [
                       k='-Submit-')
     ],  # End Row 2
     [  # Row 3 - Output
-        sg.Output(key='-Output Element-',
-                  background_color='Grey',
+        sg.Output(k='-Output Element-',
+                  background_color='DarkGrey',
                   text_color='Black',
-                  echo_stdout_stderr=False,
+                  echo_stdout_stderr=True,
                   size=(81, 15))
     ],  # End Row 3
     # Row 4 - Text
@@ -102,18 +114,24 @@ mainWindow = sg.Window(
     auto_size_text=True,
     auto_size_buttons=False,
     text_justification='Center',
-    margins=(15, 10),  # pixels
-    element_padding=(3, 3)  # pixels
+    margins=(5, 5),  # pixels
+    element_padding=(3, 3),  # pixels
 )
 
-while True:  # Keeps Window Open.
+#! Process Window Events:
+while True:
     event, values = mainWindow.read(
-    )  # Passes button press events and corresponding input values to the "event/values" variables.
-    print(event, values)  # Displays events and input values in console.
-    if event == sg.WIN_CLOSED or event == 'Exit':  # Closes window upon exit button, or clicking the x.
+    )  #? Passes button press events and corresponding input values to the "event/values" variables.
+    #print(event, values)  #? Displays events and input values in console. (Good for debugging.)
+
+    #! Closes window upon exit button, or clicking the x.
+    if event == sg.WIN_CLOSED or event == 'Exit':
         break
     if event == '-Submit-':
-        googleURLs(values['-User Search Query-'])
+        if values['-URL Logging-'] == True:
+            googleURLs(values['-User Search Query-'], values['-URL Logging-'])
+        else:
+            googleURLs(values['-User Search Query-'], values['-URL Logging-'])
     if event == '-Open-':
         openUrl(values['-Browse URL-'])
 
