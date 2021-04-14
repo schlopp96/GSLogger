@@ -12,7 +12,7 @@
 #* Add options to configured rate limits (time between loads)
 
 import secrets
-from webbrowser import open as o
+from webbrowser import open as url_open
 
 import PySimpleGUI as sg
 from googlesearch import search as gSearch
@@ -20,12 +20,12 @@ from googlesearch import search as gSearch
 
 def googleURLs(query: str):
     """
-    - Performs a google search for the query entered, and scrapes resulting URLs in 5 "chunks" of 3 urls every 1 second.
+    Performs a google search for the query entered, and scrapes resulting URLs in 5 "chunks" of 3 urls every 1 second.
     
     - BE WARNED: 
         - Use sparingly; otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
     - Saves each URL in a separate file located in the logs directory:
-        - '../GSearch_URL_WebScraper/logs/**.txt'
+        - './GSearch_URL_WebScraper/logs/**.txt'
     """
     search_query = query
     file_uid = secrets.token_urlsafe(5)
@@ -49,22 +49,17 @@ def openUrl(url: str) -> bool:
     
     """
     searchQuery = url
-    return o(searchQuery, 2)
+    return url_open(searchQuery, 2)
 
 
-sg.theme('DarkBlue')  # Color of window.
+#* Color Scheme of window:
+sg.theme('DarkBlue')
 
-# Google-Search Output Element; Displays Retrieved URls.
-gsOutputElement = sg.Output(key='-Output Element-',
-                            background_color='White',
-                            text_color='Black',
-                            echo_stdout_stderr=False,
-                            size=(81, 15))
-
-# Window Element Design/Layout
+#? Window Element Design/Layout:
 mainLayout = [
     # Row 1 - Text
-    [sg.Text('Enter a Search Query Below')],  # End Row 1
+    [sg.Text('Enter a Search Query Below')],
+    # End Row 1
     [  # Row 2 - Input/Search
         sg.InputText(do_not_clear=False,
                      size=(70, 1),
@@ -74,10 +69,17 @@ mainLayout = [
                       tooltip='Click to confirm search query.',
                       k='-Submit-')
     ],  # End Row 2
-    # Output Element (Element parameters )
-    [gsOutputElement],  # End Row 3
+    [  # Row 3 - Output
+        sg.Output(key='-Output Element-',
+                  background_color='Grey',
+                  text_color='Black',
+                  echo_stdout_stderr=False,
+                  size=(81, 15))
+    ],  # End Row 3
+    # Row 4 - Text
     [sg.Text('Copy/Paste URL to Open in Browser')],
-    [
+    # End Row 4
+    [  # Row 5 - URL Input/Browse
         sg.InputText(
             size=(70, 1),
             do_not_clear=False,
@@ -88,16 +90,21 @@ mainLayout = [
         sg.ReadButton('Open URL',
                       tooltip='Opens the entered URL in a web browser.',
                       k='-Open-')
-    ],
+    ],  # End Row 5
+    # Row 6 - Exit
     [sg.Exit(tooltip='Click to Exit Application.')]
-]  # Final/Exit Button Row (Row 4)
+]  # End Row 6
 
+#? Main Application Window Build:
 mainWindow = sg.Window(
     'Google Search URL Scraper',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
-    text_justification='Center')  # Main Application Window Build,
+    text_justification='Center',
+    margins=(15, 10),  # pixels
+    element_padding=(3, 3)  # pixels
+)
 
 while True:  # Keeps Window Open.
     event, values = mainWindow.read(
