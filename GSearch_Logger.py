@@ -35,8 +35,8 @@ def googleURLs(query: str, logURLs: bool) -> None:
     #! If logging is enabled, URLs will be saved in the logs directory.
     if enable_logging == True:
         with open(fr'./GSearch-Logger/logs/logFile_{file_uid}.txt', 'x') as fh:
-            fh.write('Search Query: %s:\n\n' % search_query)
-            print('\nSearch Query: %s\n\n' % search_query)
+            fh.write('> Search Query: %s:\n\n' % search_query)
+            print('> Search Query: %s\n' % search_query)
             for url in gSearch(search_query,
                                tld="com",
                                num=3,
@@ -44,12 +44,13 @@ def googleURLs(query: str, logURLs: bool) -> None:
                                pause=1.0):
                 fh.write('{}\n\n'.format(url))
                 print('\n{}'.format(url))
-        return print('Process Complete!\nLog saved as %s\n\n' % fh)
+        return print('\n\n>> Process Complete! <<\n> Log saved as:\n%s\n' % fh)
     #! If logging is disabled, URLs are only displayed through output.
     elif enable_logging == False:
+        print('> Search Query: %s\n' % search_query)
         for url in gSearch(search_query, tld="com", num=3, stop=15, pause=1.0):
             print('\n{}'.format(url))
-        return print('Process Complete!')
+        return print('\n\n>> Process Complete! <<\n')
 
 
 def openUrl(url: str) -> bool:
@@ -69,7 +70,7 @@ mainLayout = [
     # Row 1 - Text/Log URLs Option
     [
         sg.Text('Enter a Search Query Below'),
-        sg.Checkbox('Log URLs?', k='-URL Logging-')
+        sg.Checkbox('Log URLs', k='-URL Logging-')
     ],
     # End Row 1
     [  # Row 2 - Input/Search
@@ -82,11 +83,12 @@ mainLayout = [
                       k='-Submit-')
     ],  # End Row 2
     [  # Row 3 - Output
-        sg.Output(k='-Output Element-',
-                  background_color='DarkGrey',
-                  text_color='Black',
-                  echo_stdout_stderr=True,
-                  size=(81, 15))
+        sg.Output(
+            k='-Output Element-',
+            background_color='DarkGrey',
+            text_color='Black',
+            #echo_stdout_stderr=True, #! Enable to display debug info.
+            size=(81, 15))
     ],  # End Row 3
     # Row 4 - Text
     [sg.Text('Copy/Paste URL to Open in Browser')],
@@ -109,7 +111,7 @@ mainLayout = [
 
 #? Main Application Window Build:
 mainWindow = sg.Window(
-    'Google Search URL Scraper',
+    'GSearch Logger - v1.1.6b',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
