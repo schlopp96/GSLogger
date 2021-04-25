@@ -45,7 +45,7 @@ def googleURLs(query: str, logURLs: bool) -> None:
                                pause=1.0):
                 fh.write('{}\n\n'.format(url))
                 print('\n{}'.format(url))
-        return print('\n\n>> Process Complete! <<\n> Log saved as:\n%s\n' % fh)
+        return print('\n\n>> Process Complete! <<\n> Log saved in "logs" directory!')
 
     #! If logging is disabled, URLs are NOT saved, and will only displayed through output.
     elif enable_logging == False:
