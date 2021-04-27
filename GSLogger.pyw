@@ -1,7 +1,7 @@
 # #?----------------------------GSearch Logger----------------------------#
 #! - Simple Application that Scrapes/Optionally Logs URLs Using Google's Search Engine.
 #! - EST. 1/14/21
-#! - GSLogger Version 1.3.8-Beta
+#! - GSLogger Version 1.4.8-Beta
 
 #TODO ================== :TO-DO: ==================== TODO#
 #* Implement easier way to open urls in browser.
@@ -9,8 +9,8 @@
 #* Add options to configure total desired number of results per query.
 #* Add options to configured rate limits (time between reads).
 
-import secrets
 #?----------------------------Modules & Libraries----------------------------#
+import secrets
 from os.path import abspath
 from webbrowser import open as url_open
 
@@ -33,7 +33,7 @@ def googleURLs(query: str, logURLs: bool) -> None:
     #NOTE - #! If logging is enabled, URLs will be saved in the logs directory.
     if logURLs == True:
         #* Create URL log file:
-        with open(fr'./GSearch-Logger/logs/logFile_{file_uid}.txt', 'x') as fh:
+        with open(fr'./GSLogger/logs/logFile_{file_uid}.txt', 'x') as fh:
             #* Write URLs to log file/display URLs in output:
             fh.write('> Search Query: %s\n\n' % query)
             print('> Search Query: %s\n' % query)
@@ -42,8 +42,7 @@ def googleURLs(query: str, logURLs: bool) -> None:
                 print('\n{}'.format(url))
         return print(
             '\n\n>> Process Complete! <<\n> Log saved as:\n> "{}" in the "logs" directory! <\n'
-            .format(abspath('./GSearch-Logger/logs/logFile_%s.txt' %
-                            file_uid)))
+            .format(abspath('./GSLogger/logs/logFile_%s.txt' % file_uid)))
 
     #NOTE - #! If logging is disabled, URLs are NOT saved, and will only displayed through output.
     elif logURLs == False:
@@ -115,7 +114,7 @@ mainLayout = [
 
 #? Main Application Window Build:
 mainWindow = sg.Window(
-    'GSLogger - v1.3.8-Beta',
+    'GSLogger - v1.4.8-Beta',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
