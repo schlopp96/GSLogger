@@ -137,5 +137,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-#User's URL logs
+#User's URL logs\Browser Cookies
 logs/logFile**
+.google-cookie
