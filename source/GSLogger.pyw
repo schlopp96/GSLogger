@@ -1,7 +1,7 @@
-# #?----------------------------GSearch Logger----------------------------#
+# #? --------------------------------GSLogger-------------------------------- #
 #! - Simple Application that Scrapes/Optionally Logs URLs Using Google's Search Engine.
 #! - EST. 1/14/21
-#! - GSLogger Version 1.4.8-Beta
+#! - GSLogger Version 1.5.0-Beta
 
 #TODO ================== :TO-DO: ==================== TODO#
 #* Implement easier way to open urls in browser.
@@ -11,11 +11,15 @@
 
 #?----------------------------Modules & Libraries----------------------------#
 import secrets
+from os import chdir as cwd
 from os.path import abspath
+from os.path import dirname as folder
 from webbrowser import open as url_open
-
 import PySimpleGUI as sg
 from googlesearch import search as gSearch
+#! Set correct current working directory:
+cwd(folder(folder(__file__)))
+#?---------------------------------------------------------------------------#
 
 
 def googleURLs(query: str, logURLs: bool) -> None:
@@ -24,16 +28,16 @@ def googleURLs(query: str, logURLs: bool) -> None:
     
     - If desired, you can log the URLs returned by the search engine by checking the "Log URLs" field.
     - Saves each URL in a separate file located in the logs directory:
-        - './GSearch_URL_WebScraper/logs/**.txt'
+        - './logs'
     - BE WARNED:
         - Use sparingly; otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
     """
-    file_uid = secrets.token_urlsafe(5)
+    file_uid: str = secrets.token_urlsafe(5)
 
-    #NOTE - #! If logging is enabled, URLs will be saved in the logs directory.
+    #NOTE - #! If logging is enabled, URLs will be saved in the "logs" directory.
     if logURLs == True:
         #* Create URL log file:
-        with open(fr'./GSLogger/logs/logFile_{file_uid}.txt', 'x') as fh:
+        with open(fr'./logs/logFile_{file_uid}.txt', 'x') as fh:
             #* Write URLs to log file/display URLs in output:
             fh.write('> Search Query: %s\n\n' % query)
             print('> Search Query: %s\n' % query)
@@ -41,10 +45,10 @@ def googleURLs(query: str, logURLs: bool) -> None:
                 fh.write('{}\n\n'.format(url))
                 print('\n{}'.format(url))
         return print(
-            '\n\n>> Process Complete! <<\n> Log saved as:\n> "{}" in the "logs" directory! <\n'
-            .format(abspath('./GSLogger/logs/logFile_%s.txt' % file_uid)))
+            '\n\n\t\t>> Process Complete! <<\n> Search log saved within the "logs" directory as:\n>> "{}" <<\n'
+            .format(abspath('./logs/logFile_%s.txt' % file_uid)))
 
-    #NOTE - #! If logging is disabled, URLs are NOT saved, and will only displayed through output.
+    #NOTE - #! If logging is disabled, URL logs are NOT saved, and will only displayed through output.
     elif logURLs == False:
         #* Display URLs in output:
         print('> Search Query: %s\n' % query)
@@ -63,7 +67,7 @@ def openUrl(url: str) -> bool:
 
 
 #? Color Scheme of window:
-sg.theme('DarkBlue')
+sg.theme('LightGray1')
 
 #? Window Element Design/Layout:
 mainLayout = [
@@ -112,9 +116,9 @@ mainLayout = [
     [sg.Exit(tooltip='Click to Exit Application.')]
 ]  #? End Row 6
 
-#? Main Application Window Build:
+#? Main Window Properties:
 mainWindow = sg.Window(
-    'GSLogger - v1.4.8-Beta',
+    'GSLogger - v1.5.0-Beta',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
@@ -135,7 +139,7 @@ while True:
     #? ===== Search Query Events ===== ?#
     if event == '-Submit Query-':
         if values['-User Search Query-'] == '':
-            sg.popup_ok('\tERROR', 'Entry cannot be blank.')
+            sg.popup_ok('\tERROR', 'Entry cannot be blank', keep_on_top=True)
         else:
             if values['-URL Logging-'] == True:
                 googleURLs(values['-User Search Query-'],
@@ -146,7 +150,7 @@ while True:
     #? ===== Open URL Events ===== ?#
     if event == '-Open-':
         if values['-Browse URL-'] == '':
-            sg.popup_ok('\tERROR', 'Entry cannot be blank.')
+            sg.popup_ok('\tERROR', '-Entry cannot be blank-', keep_on_top=True)
         else:
             openUrl(values['-Browse URL-'])
 
