@@ -140,3 +140,6 @@ cython_debug/
 #User's URL logs\Browser Cookies
 logs/logFile**
 .google-cookie
+
+# Commit-Notes
+commit-notes.md
