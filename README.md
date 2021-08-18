@@ -1,13 +1,13 @@
 # GSLogger
 
-> v1.6.0-Beta
+> v1.6.5-Beta
 
 ---
 
 ## About GSLogger
 
-- GSLogger is a simple Google Search engine URL scraper.
-- Essentially users can search for a topic, (optionally) save the search results, and even open the URL from the application if desired.
+- GSLogger is a simple Google search engine URL-scraper.
+- Essentially users can search for a topic, (optionally) log the search results, and even open the URL from the application if desired, using the bottom-most input field.
   ![GSLogger](screenshots/GSL_All.png)
 
 ---
@@ -30,4 +30,4 @@
 
 ## Future Plans
 
-- While this is an extremely simple project originally built for GUI-practice-purposes, I may expand on it now and again as I continue my Computer Science education, so stay tuned for any improvements or updates in the future.
+- While this is an extremely simple project originally built for GUI-practice-purposes, I may expand on it now and again as I continue my CS education, so stay tuned for any improvements or updates in the future.
