@@ -1,6 +1,6 @@
 # GSLogger
 
-> v1.6.5-Beta
+> v1.6.6-Beta
 
 ---
 

@@ -1,4 +1,5 @@
-# #? --------------------------GSLogger v1.6.5-Beta-------------------------- #
+#!/usr/bin/env python3
+#? --------------------------GSLogger v1.6.6-Beta-------------------------- #
 #! - Simple Application that Scrapes/Optionally Logs URLs Using Google's Search Engine.
 #! - EST. 1/14/21
 
@@ -9,6 +10,7 @@
 #* Add options to configured rate limits (time between reads).
 
 #?----------------------------Modules & Libraries----------------------------#
+from datetime import datetime as time
 import secrets
 from os import chdir as cwd
 from os.path import abspath
@@ -22,8 +24,7 @@ cwd(folder(folder(__file__)))
 
 
 def googleURLs(query: str, logURLs: bool) -> None:
-    """
-    Search google for the query entered, and scrape resulting URLs.
+    """Search google for the query entered, and scrape resulting URLs.
 
     - As of now, function returns 3 URLs every second broken up into 5 "chunks".
     - If desired, you can log the URLs returned by the search engine by checking the "Log URLs" field.
@@ -33,11 +34,11 @@ def googleURLs(query: str, logURLs: bool) -> None:
         - Use sparingly; otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
     - Parameters:
         - :param query: topic to search for.
-        - :type query: (str)
+        - :type query: str
         - :param logURLs: toggle saving a text-log of retrieved URLs upon each search.
-        - :type logURLs: (bool)
-    - :returns: URLs from user search paramaters are printed to output window.
-    - :rtype: (None)
+        - :type logURLs: bool
+    - :return: URLs from user search paramaters are printed to output window.
+    - :rtype: None
     """
     file_uid: str = secrets.token_urlsafe(5)
 
@@ -45,8 +46,12 @@ def googleURLs(query: str, logURLs: bool) -> None:
         #* Create URL log file:
         with open(fr'./logs/logFile_{file_uid}.log', 'x') as fh:
             #* Write URLs to log file/display URLs in output:
-            fh.write(f'> User Search:\n"{query}"\n\n')
-            print(f'> User Search:\n"{query}"\n')
+            fh.write(
+                f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n\n'
+            )
+            print(
+                f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n'
+            )
             for url in gSearch(query, tld="com", num=3, stop=15, pause=1.0):
                 fh.write(f'> {url}\n\n')
                 print(f'\n> {url}')
@@ -55,22 +60,24 @@ def googleURLs(query: str, logURLs: bool) -> None:
         )
     else:
         #* Display URLs in output:
-        print(f'> User Search:\n"{query}"\n')
+        print(
+            f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n'
+        )
+
         for url in gSearch(query, tld="com", num=3, stop=15, pause=1.0):
             print(f'\n> {url}')
         return print('\n\n>> Process Complete! <<\n')
 
 
 def openUrl(url: str) -> bool:
-    """
-    Opens URL within user's default browser.
+    """Opens URL within user's default browser.
 
     - If user's browser is already open, a new tab will be created.
 
     - :param url: URL link to be opened in browser.
-    - :type url: (str)
-    - :returns: Opens website in default web-browser.
-    - :rtype: (bool)
+    - :type url: str
+    - :return: Opens website in default web-browser.
+    - :rtype: bool
     """
     return url_open(url, 2)
 
@@ -123,7 +130,7 @@ mainLayout = [
 
 #? Main Window Properties:
 mainWindow = sg.Window(
-    'GSLogger - v1.6.5-Beta',
+    'GSLogger - v1.6.6-Beta',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
