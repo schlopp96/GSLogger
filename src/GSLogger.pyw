@@ -18,7 +18,8 @@ from os.path import dirname as folder
 from webbrowser import open as url_open
 import PySimpleGUI as sg
 from googlesearch import search as gSearch
-#! Set working directory to install location:
+
+#$ Set working directory to install location:
 cwd(folder(folder(__file__)))
 #?---------------------------------------------------------------------------#
 
@@ -29,16 +30,18 @@ def googleURLs(query: str, logURLs: bool) -> None:
     - As of now, function returns 3 URLs every second broken up into 5 "chunks".
     - If desired, you can log the URLs returned by the search engine by checking the "Log URLs" field.
         - Saves each URL in a separate file located in the logs directory:
-            - '../logs/'
-    - BE WARNED:
-        - Use sparingly; otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
-    - Parameters:
+            - `'GSLogger/logs/'`
+
+    ### BE WARNED:
+        - Use sparingly, otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
+
+    Parameters:
         - :param query: topic to search for.
         - :type query: str
         - :param logURLs: toggle saving a text-log of retrieved URLs upon each search.
         - :type logURLs: bool
-    - :return: URLs from user search paramaters are printed to output window.
-    - :rtype: None
+        - :return: URLs from user search paramaters are printed to output window.
+        - :rtype: None
     """
     file_uid: str = secrets.token_urlsafe(5)
 
@@ -72,8 +75,9 @@ def googleURLs(query: str, logURLs: bool) -> None:
 def openUrl(url: str) -> bool:
     """Opens URL within user's default browser.
 
-    - If user's browser is already open, a new tab will be created.
+    If a browser window is already open, a new tab will be created within the window.
 
+    Parameters:
     - :param url: URL link to be opened in browser.
     - :type url: str
     - :return: Opens website in default web-browser.
@@ -82,12 +86,12 @@ def openUrl(url: str) -> bool:
     return url_open(url, 2)
 
 
-#? Color Scheme of window:
+#> Color Scheme of window:
 sg.theme('LightGray1')
 
-#? Window Element Design/Layout:
+#& Window Element Design/Layout:
 mainLayout = [
-    #? Row 1 - Text/Log URLs Option
+    #@ Row 1 - Text/Log URLs Option
     [
         sg.Text('Enter a Search Query Below'),
         sg.Checkbox(
@@ -95,7 +99,7 @@ mainLayout = [
             k='-URL Logging-',
             tooltip='Check to enable search-result logging upon each query.')
     ],
-    [  #? Row 2 - Input/Search
+    [  #@ Row 2 - Input/Search
         sg.InputText(do_not_clear=False,
                      size=(80, 1),
                      tooltip='Enter a search query to look up on Google.',
@@ -104,15 +108,15 @@ mainLayout = [
                       tooltip='Click to confirm search query.',
                       k='-Submit Query-')
     ],
-    [  #? Row 3 - Output
+    [  #@ Row 3 - Output
         sg.Output(k='-Output Element-',
                   background_color='DarkGrey',
                   text_color='Black',
                   size=(91, 15))
     ],
-    #? Row 4 - Text
+    #@ Row 4 - Text
     [sg.Text('Copy/Paste URL to Open in Browser')],
-    [  #? Row 5 - URL Input/Browse
+    [  #@ Row 5 - URL Input/Browse
         sg.InputText(
             size=(80, 1),
             do_not_clear=False,
@@ -124,31 +128,30 @@ mainLayout = [
                       tooltip='Opens the entered URL in a web browser.',
                       k='-Open-')
     ],
-    #? Row 6 - Exit
+    #@ Row 6 - Exit
     [sg.Exit(tooltip='Click to Exit Application.')]
 ]
 
-#? Main Window Properties:
+#$ Main Window Properties:
 mainWindow = sg.Window(
-    'GSLogger - v1.6.6-Beta',
+    'GSLogger - v1.6.6b',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
     text_justification='Center',
-    margins=(5, 5),  #! pixels
-    element_padding=(3, 3),  #! pixels
+    margins=(2, 2),  #! pixels
 )
 
-#? =============== Process Window Events: =============== ?#
+#~ =============== Process Window Events: =============== ~#
 while True:
     #NOTE - #? Passes button press events and corresponding input values to the "event/values" variables:
     event, values = mainWindow.read()
-    #print(event, values)  #NOTE - #! Enable to display window events in console (default=OFF).
+    #print(event, values)  #NOTE - #@ Enable to display window events in console (default=OFF).
 
     #NOTE - #! Closes window upon exit button, or clicking the x.
     if event in [sg.WIN_CLOSED, 'Exit']:
         break
-    #? ===== Search Query Events ===== ?#
+    #& ===== Search Query Events ===== &#
     if event == '-Submit Query-':
         if values['-User Search Query-'] == '':
             sg.popup_ok('\t- ERROR -',
@@ -156,7 +159,7 @@ while True:
                         keep_on_top=True)
         else:
             googleURLs(values['-User Search Query-'], values['-URL Logging-'])
-    #? ===== Open URL Events ===== ?#
+    #& ===== Open URL Events ===== &#
     if event == '-Open-':
         if values['-Browse URL-'] == '':
             sg.popup_ok('\t- ERROR -',
