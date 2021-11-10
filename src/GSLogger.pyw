@@ -141,7 +141,7 @@ mainWindow = sg.Window(
     text_justification='Center',
     margins=(2, 2),  #! pixels
 )
-#ass
+
 #~ =============== Process Window Events: =============== ~#
 while True:
     #NOTE - #? Passes button press events and corresponding input values to the "event/values" variables:
