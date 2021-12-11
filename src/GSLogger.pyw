@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#? --------------------------GSLogger v1.6.6-Beta-------------------------- #
+#? --------------------------GSLogger v1.7.0-Beta-------------------------- #
 #! - Simple Application that Scrapes/Optionally Logs URLs Using Google's Search Engine.
 #! - EST. 1/14/21
 
@@ -36,17 +36,17 @@ def googleURLs(query: str, logURLs: bool) -> None:
         - Use sparingly, otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
 
     Parameters:
-        - :param query: topic to search for.
-        - :type query: str
-        - :param logURLs: toggle saving a text-log of retrieved URLs upon each search.
-        - :type logURLs: bool
-        - :return: URLs from user search paramaters are printed to output window.
-        - :rtype: None
+        :param query: topic to search for.
+        :type query: str
+        :param logURLs: toggle saving a text-log of retrieved URLs upon each search.
+        :type logURLs: bool
+        :return: URLs from user search paramaters are printed to output window.
+        :rtype: None
     """
-    file_uid: str = secrets.token_urlsafe(5)
-
     if logURLs:
+
         #* Create URL log file:
+        file_uid: str = secrets.token_urlsafe(5)
         with open(fr'./logs/logFile_{file_uid}.log', 'x') as fh:
             #* Write URLs to log file/display URLs in output:
             fh.write(
@@ -78,16 +78,16 @@ def openUrl(url: str) -> bool:
     If a browser window is already open, a new tab will be created within the window.
 
     Parameters:
-    - :param url: URL link to be opened in browser.
-    - :type url: str
-    - :return: Opens website in default web-browser.
-    - :rtype: bool
+        :param url: URL link to be opened in browser.
+        :type url: str
+        :return: Opens website in default web-browser.
+        :rtype: bool
     """
     return url_open(url, 2)
 
 
 #> Color Scheme of window:
-sg.theme('LightGray1')
+sg.theme('DarkGrey')
 
 #& Window Element Design/Layout:
 mainLayout = [
@@ -109,10 +109,14 @@ mainLayout = [
                       k='-Submit Query-')
     ],
     [  #@ Row 3 - Output
-        sg.Output(k='-Output Element-',
-                  background_color='DarkGrey',
-                  text_color='Black',
-                  size=(91, 15))
+        sg.Output(
+            k='-Output Element-',
+            background_color='DarkGrey',
+            text_color='Black',
+            size=(91, 15),
+            tooltip=
+            'Highlight a URL with your cursor and use Ctrl+C to copy a link, then use Ctrl+V to paste a link into the search bar.'
+        )
     ],
     #@ Row 4 - Text
     [sg.Text('Copy/Paste URL to Open in Browser')],
@@ -122,7 +126,7 @@ mainLayout = [
             do_not_clear=False,
             k='-Browse URL-',
             tooltip=
-            'Copy/Paste or simply enter a URL and click "Open URL" to view the web-page in your browser.'
+            'Copy & Paste a URL using Ctrl+C while highlighting a URL and click "Open URL" to view the web-page in your browser.'
         ),
         sg.ReadButton('Open URL',
                       tooltip='Opens the entered URL in a web browser.',
@@ -134,7 +138,7 @@ mainLayout = [
 
 #$ Main Window Properties:
 mainWindow = sg.Window(
-    'GSLogger - v1.6.6b',
+    'GSLogger - v1.7.0b',
     mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
@@ -158,7 +162,8 @@ while True:
                         'Entry cannot be blank',
                         keep_on_top=True)
         else:
-            googleURLs(values['-User Search Query-'], values['-URL Logging-'])
+            googleURLs(query=values['-User Search Query-'],
+                       logURLs=values['-URL Logging-'])
     #& ===== Open URL Events ===== &#
     if event == '-Open-':
         if values['-Browse URL-'] == '':
