@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#? --------------------------GSLogger v1.7.0-Beta-------------------------- #
+#? --------------------------GSLogger v1.7.1-Beta-------------------------- #
 #! - Simple Application that Scrapes/Optionally Logs URLs Using Google's Search Engine.
 #! - EST. 1/14/21
 
@@ -44,11 +44,8 @@ def googleURLs(query: str, logURLs: bool) -> None:
         :rtype: None
     """
     if logURLs:
-
-        #* Create URL log file:
         file_uid: str = secrets.token_urlsafe(5)
         with open(fr'./logs/logFile_{file_uid}.log', 'x') as fh:
-            #* Write URLs to log file/display URLs in output:
             fh.write(
                 f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n\n'
             )
@@ -62,7 +59,6 @@ def googleURLs(query: str, logURLs: bool) -> None:
             f'\n\n\t\t- Process Complete! -\n- Search log saved within the "logs" directory as:\n"{abspath(f"./logs/logFile_{file_uid}.log")}"\n'
         )
     else:
-        #* Display URLs in output:
         print(
             f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n'
         )
