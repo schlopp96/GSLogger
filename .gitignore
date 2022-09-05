@@ -138,8 +138,5 @@ dmypy.json
 cython_debug/
 
 #User's URL logs\Browser Cookies
-logs/logFile**
+logs/
 .google-cookie
-
-# Commit-Notes
-updateNotes.md

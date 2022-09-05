@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#? --------------------------GSLogger v1.7.1-Beta-------------------------- #
+#? --------------------------GSLogger------------------------------------- #
 #! - Simple Application that Scrapes/Optionally Logs URLs Using Google's Search Engine.
 #! - EST. 1/14/21
 
@@ -10,17 +10,25 @@
 #* Add options to configured rate limits (time between reads).
 
 #?----------------------------Modules & Libraries----------------------------#
-from datetime import datetime as time
+
 import secrets
+import sys
+from datetime import datetime as time
 from os import chdir as cwd
 from os.path import abspath
 from os.path import dirname as folder
+from posixpath import dirname
 from webbrowser import open as url_open
+
 import PySimpleGUI as sg
 from googlesearch import search as gSearch
 
+sys.path.insert(0, dirname(
+    dirname(__file__)))  # Ensure main module can be found by Python.
+
 #$ Set working directory to install location:
 cwd(folder(folder(__file__)))
+
 #?---------------------------------------------------------------------------#
 
 
@@ -35,16 +43,19 @@ def googleURLs(query: str, logURLs: bool) -> None:
     ### BE WARNED:
         - Use sparingly, otherwise Google may *BLOCK YOUR IP*, temporarily disallowing any and all future experimentation/google searches entirely.
 
-    Parameters:
-        :param query: topic to search for.
-        :type query: str
-        :param logURLs: toggle saving a text-log of retrieved URLs upon each search.
-        :type logURLs: bool
-        :return: URLs from user search paramaters are printed to output window.
-        :rtype: None
+    ---
+
+    :param query: topic to search for.
+    :type query: :class:`str`
+    :param logURLs: toggle saving a text-log of retrieved URLs upon each search.
+    :type logURLs: :class:`bool`
+    :return: URLs from user search paramaters are printed to output window.
+    :rtype: `None`
     """
+
     if logURLs:
         file_uid: str = secrets.token_urlsafe(5)
+
         with open(fr'./logs/logFile_{file_uid}.log', 'x') as fh:
             fh.write(
                 f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n\n'
@@ -58,6 +69,7 @@ def googleURLs(query: str, logURLs: bool) -> None:
         return print(
             f'\n\n\t\t- Process Complete! -\n- Search log saved within the "logs" directory as:\n"{abspath(f"./logs/logFile_{file_uid}.log")}"\n'
         )
+
     else:
         print(
             f'> Time of Search:\n{time.now().strftime("> %Y-%m-%d %H:%M:%S")}\n\n> Search Query:\n"{query}"\n'
@@ -73,12 +85,14 @@ def openUrl(url: str) -> bool:
 
     If a browser window is already open, a new tab will be created within the window.
 
-    Parameters:
-        :param url: URL link to be opened in browser.
-        :type url: str
-        :return: Opens website in default web-browser.
-        :rtype: bool
+    ---
+
+    :param url: URL link to be opened in browser.
+    :type url: :class:`str`
+    :return: Opens website in default web-browser.
+    :rtype: :class:`bool`
     """
+
     return url_open(url, 2)
 
 
@@ -87,7 +101,6 @@ sg.theme('DarkGrey')
 
 #& Window Element Design/Layout:
 mainLayout = [
-    #@ Row 1 - Text/Log URLs Option
     [
         sg.Text('Enter a Search Query Below'),
         sg.Checkbox(
@@ -95,7 +108,7 @@ mainLayout = [
             k='-URL Logging-',
             tooltip='Check to enable search-result logging upon each query.')
     ],
-    [  #@ Row 2 - Input/Search
+    [
         sg.InputText(do_not_clear=False,
                      size=(80, 1),
                      tooltip='Enter a search query to look up on Google.',
@@ -104,7 +117,7 @@ mainLayout = [
                       tooltip='Click to confirm search query.',
                       k='-Submit Query-')
     ],
-    [  #@ Row 3 - Output
+    [
         sg.Output(
             k='-Output Element-',
             background_color='DarkGrey',
@@ -113,10 +126,8 @@ mainLayout = [
             tooltip=
             'Highlight a URL with your cursor and use Ctrl+C to copy a link, then use Ctrl+V to paste a link into the search bar.'
         )
-    ],
-    #@ Row 4 - Text
-    [sg.Text('Copy/Paste URL to Open in Browser')],
-    [  #@ Row 5 - URL Input/Browse
+    ], [sg.Text('Copy/Paste URL to Open in Browser')],
+    [
         sg.InputText(
             size=(80, 1),
             do_not_clear=False,
@@ -127,31 +138,26 @@ mainLayout = [
         sg.ReadButton('Open URL',
                       tooltip='Opens the entered URL in a web browser.',
                       k='-Open-')
-    ],
-    #@ Row 6 - Exit
-    [sg.Exit(tooltip='Click to Exit Application.')]
+    ], [sg.Exit(tooltip='Click to Exit Application.')]
 ]
 
-#$ Main Window Properties:
 mainWindow = sg.Window(
-    'GSLogger - v1.7.0b',
-    mainLayout,
+    'GSLogger - v1.7.1b',
+    layout=mainLayout,
     auto_size_text=True,
     auto_size_buttons=False,
     text_justification='Center',
-    margins=(2, 2),  #! pixels
+    margins=(2, 2)  #! pixels
 )
 
 #~ =============== Process Window Events: =============== ~#
 while True:
-    #NOTE - #? Passes button press events and corresponding input values to the "event/values" variables:
     event, values = mainWindow.read()
     #print(event, values)  #NOTE - #@ Enable to display window events in console (default=OFF).
 
-    #NOTE - #! Closes window upon exit button, or clicking the x.
     if event in [sg.WIN_CLOSED, 'Exit']:
         break
-    #& ===== Search Query Events ===== &#
+
     if event == '-Submit Query-':
         if values['-User Search Query-'] == '':
             sg.popup_ok('\t- ERROR -',
@@ -160,7 +166,7 @@ while True:
         else:
             googleURLs(query=values['-User Search Query-'],
                        logURLs=values['-URL Logging-'])
-    #& ===== Open URL Events ===== &#
+
     if event == '-Open-':
         if values['-Browse URL-'] == '':
             sg.popup_ok('\t- ERROR -',
